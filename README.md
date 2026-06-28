@@ -89,8 +89,8 @@ All keys are deleted after a successful verification.
 2. **Callee processes** the incoming call:
    - If the SIP headers contain `Supported:civ` and a `Session-ID`, the verification flow is triggered.
    - Otherwise, the call is routed normally with `CALLERID(name)=Unverifiable callerID`.
-3. **Verification succeeds** – the callee sets `CALLERID(name)=Verified CallerID` and bridges to the final extension.
-4. **Verification fails** (DTMF mismatch or timeout) – `CALLERID(name)=Spoofed CallerID`.
+3. **Verification succeeds** – the callee sets `CALLERID(name)=Verified callerID` and bridges to the final extension.
+4. **Verification fails** (DTMF mismatch or timeout) – `CALLERID(name)=Spoofed callerID`.
 
 ---
 

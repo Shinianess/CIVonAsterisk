@@ -10,6 +10,7 @@ The flow involves two Asterisk instances:
 
 - **Caller side** – the originating Asterisk (configuration in `caller's Asterisk.conf`).
 - **Callee side** – the terminating Asterisk (configuration in `callee's Asterisk.conf`).
+- **3rd party side** – the MITM Asterisk (configuration in `spoofer's Asterisk.conf`).
 
 ### Sequence Diagram
 
@@ -81,8 +82,6 @@ Copy the code from `caller's Asterisk.conf` into your `extensions.conf`.
 - Replace `serverca` with your callee’s SIP peer name that routes the called number.
 - Replace `serversg` with your spoofer’s SIP peer name.
 - The extension `3922618` is the caller's number. Please create and register the endpoint before running the code.
-- The number '392231' is the callee's number. By default, dialling extension `9392231` with CIV enabled, while '9312293' disable CIV. The callee's endpoint will show the verification result accordingly.
-- Dialling '93922800' enables server-based forwarding. The callee's server (serverca) will forward the call to 3922700@serversg. The CIV result will show on the endpoint registered as 3922700 on serversg.
 
 ### Callee‑Side Asterisk
 
@@ -93,15 +92,15 @@ Copy the code from `callee's Asterisk.conf` into your `extensions.conf`.
 - Replace `serversg` with your spoofer’s SIP peer name.
 - `392231` is the final callee extension; adjust as needed.
 
-### Spoofer‑Side Asterisk
+### 3rd party‑Side Asterisk
 
-Copy the code from `callee's Asterisk.conf` into your `extensions.conf`.
+Copy the code from `spoofer's Asterisk.conf` into your `extensions.conf`.
 
 **Tips**:
 - Replace `serverfr` with the callee’s SIP peer name used for callback routing.
 - Replace `serverca` with your callee’s SIP peer name that routes the called number.
-- When making call, `3922700` change it callID to '3922618' to spoof the number of the caller. 
-- When receiving call, `3922700` is the number to receive the forwarded call from 392231@serverca.
+- When making call, `3922700` spoof it callID to '3922618'. 
+- When receiving call, `3922700` receives the civ-enabled forwarded call from 392231@serverca.
 
 
 ---
@@ -131,12 +130,13 @@ All keys are deleted after a successful verification.
 
 ## Usage
 
-1. **Caller dials** `9392231` (or your custom number) to initiate a CIV enabled call.
-2. **Callee processes** the incoming call:
+1. **Caller dials** `9392231` (or your custom number) to initiate a CIV enabled call, while '9312293' to disable CIV. Calling '93922800' to enable the scenario of server-side forwarding. The callee's server (serverca) will forward the call to 3922700@serversg. The CIV result will show on the endpoint of '3922700'.
+2. **3rd party dials** '9392231' to initiate a callerID spoofing call.
+3. **Callee processes** the incoming call:
    - If the SIP headers contain `Supported:civ` and a `Session-ID`, the verification flow is triggered.
    - Otherwise, the call is routed normally with `CALLERID(name)=Unverifiable callerID`.
-3. **Verification succeeds** – the receiver's server sets `CALLERID(name)=Verified callerID` and bridges to the final extension.
-4. **Verification fails** (DTMF mismatch or timeout) – `CALLERID(name)=Spoofed callerID`.
+4. **Verification succeeds** – the receiver's server sets `CALLERID(name)=Verified callerID` and bridges to the final extension.
+5. **Verification fails** (DTMF mismatch or timeout) – `CALLERID(name)=Spoofed callerID`.
 
 ---
 

@@ -14,41 +14,51 @@ The flow involves two Asterisk instances:
 ### Sequence Diagram
 
 
-```mermaid
-sequenceDiagram
-    participant AlicePhone as Alice's phone
-    participant ServerFR as serverfr (Alice's carrier)
-    participant ServerCA as serverca (Bob's carrier)
-    participant BobPhone as Bob's phone
-
-    AlicePhone->>ServerFR: 1. calls Bob as Alice
-    ServerFR->>ServerCA: 2. calls Bob from Alice's number
-    ServerCA->>ServerFR: 3. sends challenge to Alice's number
-    ServerFR->>ServerCA: 4. sends response
-    ServerCA->>BobPhone: 5. rings from Alice's number (authenticated)
+```
+          Alice's carrier          Bob's carrier
+          gateway (serverfr)       gateway (serverca)
+                ┌─┐                    ┌─┐
+                │ │ 2. calls Bob from  │ │
+                │ │  Alice's number    │ │
+    1. calls Bob│ │───────────────────▶│ │ 5. rings from
+  ┌───────┐ as Alice  │ │ 3. sends challenge │ │ Alice's number┌───────┐
+  │Alice's│──────────▶│ │  to Alice's number │ │──────────────▶│ Bob's │
+  │ phone │           │ │◀───────────────────│ │(authenticated)│ phone │
+  └───────┘           │ │                    │ │               └───────┘
+                      │ │ 4. sends response  │ │
+                      │ │───────────────────▶│ │
+                      └─┘                    └─┘
 ```
 
          Figure 1: authenticated caller with an unmodified number
 
 
-```mermaid
-sequenceDiagram
-    participant AlicePhone as Alice's phone
-    participant ServerFR as serverfr
-    participant ServerCA as serverca
-    participant ServerSG as serversg (Bob's carrier 2)
-    participant BobPhone1 as Bob's phone 1
-    participant BobPhone2 as Bob's phone 2
-
-    AlicePhone->>ServerFR: 1. calls Bob as Alice
-    ServerFR->>ServerCA: 2. calls Bob from Alice's number
-    ServerCA->>ServerFR: 3. sends challenge to Alice's number
-    ServerFR->>ServerCA: 4. sends response
-    ServerCA->>ServerSG: 5. forwards to Bob's 2nd number
-    ServerSG->>ServerCA: 6. sends challenge to Alice's number
-    ServerCA->>ServerSG: 7. sends response
-    ServerSG->>BobPhone2: 9. rings from Alice's number (authenticated)
-    note over ServerCA, ServerSG: steps 8 & 9 omitted for brevity
+```
+             Alice's carrier          Bob's carrier
+          gateway (serverfr)       gateway (serverca)
+                    ┌─┐                    ┌─┐
+                    │ │ 2. calls Bob from  │ │
+                    │ │  Alice's number    │ │
+        1. calls Bob│ │───────────────────▶│ │
+┌───────┐ as Alice  │ │ 3. sends challenge │ │
+│Alice's│──────────▶│ │  to Alice's number │ │     ┌───────┐
+│ phone │           │ │◀───────────────────│ │     │ Bob's │
+└───────┘           │ │                    │ │     │phone 1│    Bob's carrier 2
+                    │ │ 4. sends response  │ │     └───────┘  gateway (serversg)
+                    │ │──────────────────▶ │ │                       ┌─┐
+                    │ │                    │ │ 5. forwards to Bob's  │ │
+                    │ │                    │ │      2nd number       │ │
+                    │ │                    │ │──────────────────────▶│ │
+                    │ │                    │ │   6. sends challenge  │ │
+                    │ │                    │ │   to Alice's number   │ │
+                    │ │◀───────────────────┼─┼────────────────────── │ │
+                    │ │                    │ │                       │ │
+                    │ │ 7. sends response  │ │ 8. forwards response  │ │
+                    │ │───────────────────▶│ │──────────────────────▶│ │
+                    │ │                    │ │                       │ │ 9. rings from  ┌───────┐
+                    │ │                    │ │                       │ │ Alice's number │ Bob's │
+                    │ │                    │ │                       │ │ ──────────────▶│phone 2│
+                    └─┘                    └─┘                       └─┘ (authenticated)└───────┘
 ```
 
 

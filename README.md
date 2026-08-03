@@ -15,18 +15,18 @@ The flow involves two Asterisk instances:
 
 
 ```
-          Alice's carrier          Bob's carrier
+             Alice's carrier          Bob's carrier
           gateway (serverfr)       gateway (serverca)
-                ┌─┐                    ┌─┐
-                │ │ 2. calls Bob from  │ │
-                │ │  Alice's number    │ │
-    1. calls Bob│ │───────────────────▶│ │ 5. rings from
+                      ┌─┐                    ┌─┐
+                      │ │ 2. calls Bob from  │ │
+                      │ │  Alice's number    │ │
+          1. calls Bob│ │───────────────────▶│ │ 5. rings from
   ┌───────┐ as Alice  │ │ 3. sends challenge │ │ Alice's number┌───────┐
   │Alice's│──────────▶│ │  to Alice's number │ │──────────────▶│ Bob's │
   │ phone │           │ │◀───────────────────│ │(authenticated)│ phone │
   └───────┘           │ │                    │ │               └───────┘
                       │ │ 4. sends response  │ │
-                      │ │───────────────────▶│ │
+                      │ │──────────────────▶ │ │
                       └─┘                    └─┘
 ```
 

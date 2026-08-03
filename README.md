@@ -13,25 +13,52 @@ The flow involves two Asterisk instances:
 
 ### Sequence Diagram
 
-```
-Caller (Asterisk)                         Callee (Asterisk)
-    |                                        |
-    | 1. INVITE (Supported:civ, Session-ID)  |
-    |--------------------------------------->|
-    | 2. Caller's code_sendback polls DB     | 2. Detects civ support, answers & plays MOH
-    |    until status becomes "code_received"| 3. Generates a random code
-    |<---------------------------------------| 4. Places a callback to the caller (verficall)
-    |                                        |   - CallerID(num) = random code
-    |                                        |   - Session-ID (remote = initial session ID)
-    | 5. Reads the code and sends it back    |
-    |    via SendDTMF                        |
-    |--------------------------------------->| (DTMF transmission)
-    |                                        | 6. Read(DTMF) receives the DTMF
-    |                                        | 7. Compares DTMF with the random code
-    |                                        | 8. Sets CALLERID(name) accordingly
-    |                                        | 9. Bridges to final extension and informs the result
-    |                                        |
-```
+
+                Alice's carrier         Bob's carrier
+              gateway (serverfr)      gateway (serverca)
+                      ┌─┐                    ┌─┐
+                      │ │ 2. calls Bob from  │ │
+                      │ │  Alice's number    │ │
+          1. calls Bob│ │───────────────────▶│ │ 5. rings from
+  ┌───────┐ as Alice  │ │ 3. sends challenge │ │ Alice's number┌───────┐
+  │Alice's│──────────▶│ │  to Alice's number │ │──────────────▶│ Bob's │
+  │ phone │           │ │◀───────────────────│ │(authenticated)│ phone │
+  └───────┘           │ │                    │ │               └───────┘
+                      │ │ 4. sends response  │ │
+                      │ │──────────────────▶ │ │
+                      └─┘                    └─┘
+
+         Figure 1: authenticated caller with an unmodified number
+
+
+
+                 Alice's carrier         Bob's carrier
+              gateway (serverfr)      gateway (serverca)
+                    ┌─┐                    ┌─┐
+                    │ │ 2. calls Bob from  │ │
+                    │ │  Alice's number    │ │
+        1. calls Bob│ │───────────────────▶│ │
+┌───────┐ as Alice  │ │ 3. sends challenge │ │
+│Alice's│──────────▶│ │  to Alice's number │ │     ┌───────┐
+│ phone │           │ │◀───────────────────│ │     │ Bob's │
+└───────┘           │ │                    │ │     │phone 1│    Bob's carrier 2
+                    │ │ 4. sends response  │ │     └───────┘  gateway (serversg)
+                    │ │──────────────────▶ │ │                       ┌─┐
+                    │ │                    │ │ 5. forwards to Bob's  │ │
+                    │ │                    │ │      2nd number       │ │
+                    │ │                    │ │──────────────────────▶│ │
+                    │ │                    │ │   6. sends challenge  │ │
+                    │ │                    │ │   to Alice's number   │ │
+                    │ │◀───────────────────┼─┼────────────────────── │ │
+                    │ │                    │ │                       │ │
+                    │ │ 7. sends response  │ │ 8. forwards response  │ │
+                    │ │───────────────────▶│ │──────────────────────▶│ │
+                    │ │                    │ │                       │ │ 9. rings from  ┌───────┐
+                    │ │                    │ │                       │ │ Alice's number │ Bob's │
+                    │ │                    │ │                       │ │ ──────────────▶│phone 2│
+                    └─┘                    └─┘                       └─┘ (authenticated)└───────┘
+
+         Figure 2: Call forwarding based on proxy forwarding
 ---
 
 ## Configuration Steps

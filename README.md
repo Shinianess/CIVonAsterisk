@@ -39,24 +39,39 @@ Caller (Asterisk)                         Callee (Asterisk)
 ### Prerequisites
 
 - Tested on Asterisk 23 (with `chan_pjsip` and `PJSIP_HEADER` function)
-- Properly configured SIP peers (`serverca` and `serverfr`) with routing
+- Properly configured SIP peers (`serverca`, `serverfr` and `serversg`) with routing
 - DTMF mode set (RFC 4733 recommended)
 
 ### Caller‑Side Asterisk
 
 Copy the code from `caller's Asterisk.conf` into your `extensions.conf`.
 
-**Customisations needed**:
+**Tips**:
 - Replace `serverca` with your callee’s SIP peer name that routes the called number.
-- The extension `9392231` is the access number; you can change it as needed.
+- Replace `serversg` with your spoofer’s SIP peer name.
+- The extension `3922618` is the caller's number. Please create and register the endpoint before running the code.
+- The number '392231' is the callee's number. By default, dialling extension `9392231` with CIV enabled, while '9312293' disable CIV. The callee's endpoint will show the verification result accordingly.
+- Dialling '93922800' enables server-based forwarding. The callee's server (serverca) will forward the call to 3922700@serversg. The CIV result will show on the endpoint registered as 3922700 on serversg.
 
 ### Callee‑Side Asterisk
 
 Copy the code from `callee's Asterisk.conf` into your `extensions.conf`.
 
-**Customisations needed**:
+**Tips**:
 - Replace `serverfr` with the callee’s SIP peer name used for callback routing.
+- Replace `serversg` with your spoofer’s SIP peer name.
 - `392231` is the final callee extension; adjust as needed.
+
+### Spoofer‑Side Asterisk
+
+Copy the code from `callee's Asterisk.conf` into your `extensions.conf`.
+
+**Tips**:
+- Replace `serverfr` with the callee’s SIP peer name used for callback routing.
+- Replace `serverca` with your callee’s SIP peer name that routes the called number.
+- When making call, `3922700` change it callID to '3922618' to spoof the number of the caller. 
+- When receiving call, `3922700` is the number to receive the forwarded call from 392231@serverca.
+
 
 ---
 
@@ -89,7 +104,7 @@ All keys are deleted after a successful verification.
 2. **Callee processes** the incoming call:
    - If the SIP headers contain `Supported:civ` and a `Session-ID`, the verification flow is triggered.
    - Otherwise, the call is routed normally with `CALLERID(name)=Unverifiable callerID`.
-3. **Verification succeeds** – the callee sets `CALLERID(name)=Verified callerID` and bridges to the final extension.
+3. **Verification succeeds** – the receiver's server sets `CALLERID(name)=Verified callerID` and bridges to the final extension.
 4. **Verification fails** (DTMF mismatch or timeout) – `CALLERID(name)=Spoofed callerID`.
 
 ---
@@ -98,7 +113,7 @@ All keys are deleted after a successful verification.
 
 ### DTMF Tuning
 - Caller uses `SendDTMF(${code}#,50,100,,)` (duration=100ms, gap=50ms). If DTMF is not recognised reliably, increase both (e.g., `100,100`).
-- Callee uses `Read(DTMF,,,,2)` with a 2‑second timeout; adjust if network latency is high.
+- Callee uses `Read(DTMF,,,,,2)` with a 2‑second timeout; adjust if network latency is high.
 
 ### Dependencies
 - Ensure `func_odbc` or `func_db` is loaded (`module show like db`).

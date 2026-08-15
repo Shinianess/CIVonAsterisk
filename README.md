@@ -130,13 +130,13 @@ All keys are deleted after a successful verification.
 
 ## Usage
 
-1. **Caller dials** `9392231` (or your custom number) to initiate a CIV enabled call, while '9312293' to disable CIV. Calling '93922800' to enable the scenario of server-side forwarding. The callee's server (serverca) will forward the call to 3922700@serversg. The CIV result will show on the endpoint of '3922700'.
-2. **3rd party dials** '9392231' to initiate a callerID spoofing call.
+1. **Caller dials** `9392231` (or your custom number) to initiate a CIV enabled call, while '9312293' to dial a non-CIV call. Calling '93922800' to enable the function of "server-side forwarding". The callee's server (serverca) will forward the call to 3922700@serversg. The CIV result will show on the endpoint of '3922700'.
+2. **3rd party dials** '9392231' to initiate a Caller ID spoofing call.
 3. **Callee processes** the incoming call:
    - If the SIP headers contain `Supported:civ` and a `Session-ID`, the verification flow is triggered.
-   - Otherwise, the call is routed normally with `CALLERID(name)=Unverifiable callerID`.
-4. **Verification succeeds** – the receiver's server sets `CALLERID(name)=Verified callerID` and bridges to the final extension.
-5. **Verification fails** (DTMF mismatch or timeout) – `CALLERID(name)=Spoofed callerID`.
+   - Otherwise, the call is routed normally with `CALLERID(name)=Unverified Caller ID`.
+4. **Verification succeeds** – the receiver's server sets `CALLERID(name)=Verified Caller ID` and bridges to the final extension.
+5. **Verification fails** (DTMF mismatch or timeout) – `CALLERID(name)=Unverified Caller ID`.
 
 ---
 

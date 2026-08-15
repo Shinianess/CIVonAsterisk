@@ -99,8 +99,8 @@ Copy the code from `spoofer's Asterisk.conf` into your `extensions.conf`.
 **Tips**:
 - Replace `serverfr` with the callee’s SIP peer name used for callback routing.
 - Replace `serverca` with your callee’s SIP peer name that routes the called number.
-- When making call, `3922700` spoof it callID to '3922618'. 
-- When receiving call, `3922700` receives the civ-enabled forwarded call from 392231@serverca.
+- When making calls, `3922700` spoof it Caller ID to '3922618'. 
+- When receiving calls, `3922700` receives the legitimate spoofed call forwarded from 392231@serverca.
 
 
 ---

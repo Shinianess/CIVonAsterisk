@@ -14,54 +14,11 @@ The flow involves two Asterisk instances:
 
 ### Sequence Diagram
 
-
-```
-             Alice's carrier          Bob's carrier
-          gateway (serverfr)       gateway (serverca)
-                      ┌─┐                    ┌─┐
-                      │ │ 2. calls Bob from  │ │
-                      │ │  Alice's number    │ │
-          1. calls Bob│ │───────────────────▶│ │ 5. rings from
-  ┌───────┐ as Alice  │ │ 3. sends challenge │ │ Alice's number┌───────┐
-  │Alice's│──────────▶│ │  to Alice's number │ │──────────────▶│ Bob's │
-  │ phone │           │ │◀───────────────────│ │(authenticated)│ phone │
-  └───────┘           │ │                    │ │               └───────┘
-                      │ │ 4. sends response  │ │
-                      │ │──────────────────▶ │ │
-                      └─┘                    └─┘
-```
 <img width="626" height="277" alt="Screenshot 2026-08-19 at 19 53 28" src="https://github.com/user-attachments/assets/bfcdf362-5cf9-4262-a9af-22477691b869" />
 
          Figure 1: authenticated caller with an unmodified number
 
 
-```
-             Alice's carrier          Bob's carrier
-          gateway (serverfr)       gateway (serverca)
-                    ┌─┐                    ┌─┐
-                    │ │ 2. calls Bob from  │ │
-                    │ │  Alice's number    │ │
-        1. calls Bob│ │───────────────────▶│ │
-┌───────┐ as Alice  │ │ 3. sends challenge │ │
-│Alice's│──────────▶│ │  to Alice's number │ │     ┌───────┐
-│ phone │           │ │◀───────────────────│ │     │ Bob's │
-└───────┘           │ │                    │ │     │phone 1│    Bob's carrier 2
-                    │ │ 4. sends response  │ │     └───────┘  gateway (serversg)
-                    │ │──────────────────▶ │ │                       ┌─┐
-                    │ │                    │ │ 5. forwards to Bob's  │ │
-                    │ │                    │ │      2nd number       │ │
-                    │ │                    │ │──────────────────────▶│ │
-                    │ │                    │ │   6. sends challenge  │ │
-                    │ │                    │ │   to Alice's number   │ │
-                    │ │◀───────────────────┼─┼────────────────────── │ │
-                    │ │                    │ │                       │ │
-                    │ │ 7. sends response  │ │ 8. forwards response  │ │
-                    │ │───────────────────▶│ │──────────────────────▶│ │
-                    │ │                    │ │                       │ │ 9. rings from  ┌───────┐
-                    │ │                    │ │                       │ │ Alice's number │ Bob's │
-                    │ │                    │ │                       │ │ ──────────────▶│phone 2│
-                    └─┘                    └─┘                       └─┘ (authenticated)└───────┘
-```
 <img width="851" height="508" alt="Screenshot 2026-08-19 at 19 53 05" src="https://github.com/user-attachments/assets/b5241f7d-d089-4262-8e93-b2334a4dd5a9" />
 
 

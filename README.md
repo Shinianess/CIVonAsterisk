@@ -10,7 +10,7 @@ The flow involves two Asterisk instances:
 
 - **Caller side** – the originating Asterisk (configuration in `caller's Asterisk.conf`).
 - **Callee side** – the terminating Asterisk (configuration in `callee's Asterisk.conf`).
-- **3rd party side** – the MITM Asterisk (configuration in `spoofer's Asterisk.conf`).
+- **3rd party side** – the third Asterisk (configuration in `spoofer's Asterisk.conf`).
 
 ### Sequence Diagram
 

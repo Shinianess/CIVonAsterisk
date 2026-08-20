@@ -1,6 +1,6 @@
 # CIV (Caller Identification Verification) on Asterisk
 
-This project implements a **CIV** (Caller ID Verification) scheme to prevent Caller ID spoofing. It uses a challenge‑response mechanism to verify whether the caller is the owner of the claimed callerID. The callee's endpoint (stock SIP client) receives either `Verified CallerID` or `Spoofed CallerID` as the verification result.
+This project implements a **CIV** (Caller ID Verification) scheme to prevent Caller ID spoofing. It uses a challenge‑response mechanism to verify whether the caller is the owner of the claimed callerID. The callee's endpoint (stock SIP client) receives either `Verified CallerID` or `Unverified CallerID` as the verification result.
 
 ---
 

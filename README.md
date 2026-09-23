@@ -82,6 +82,7 @@ Copy the code from `spoofer's Asterisk.conf` into your `extensions.conf`.
 - `civ/session/${initial_session_id}` → `active` (marks a valid session)
 - `civ/status/${initial_session_id}` → `initial` / `code_received` (state machine)
 - `civ/code/${initial_session_id}` → stores the 4‑digit code (written by the callback, read by the caller)
+- `civ/${CALLERID(num)}/status` → record of 4-digit code during caller ID spoofing (written by the callback, read by the caller)
 
 All keys are deleted after a successful verification.
 
